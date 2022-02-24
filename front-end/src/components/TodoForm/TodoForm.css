@@ -1,0 +1,29 @@
+.task-input-area {
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  padding: 5px;
+}
+
+.task-name,
+.task-name:focus {
+  width: 100%;
+  border: none;
+  outline: none;
+  font-weight: bold;
+}
+.task-name::placeholder {
+  font-weight: 600;
+  font-size: 11pt;
+}
+
+.task-description,
+.task-description:focus {
+  width: 100%;
+  border: none;
+  outline: none;
+  resize: none;
+}
+
+.task-description::placeholder {
+  font-size: 10pt;
+}
