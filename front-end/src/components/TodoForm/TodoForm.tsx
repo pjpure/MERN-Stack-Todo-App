@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Button, Form } from "react-bootstrap";
+import { Button } from "react-bootstrap";
 import "./TodoForm.css";
 function TodoForm({ addTask }: { addTask: (task: any) => void }) {
   const [taskName, setTaskName] = useState<string>("");
@@ -17,7 +17,7 @@ function TodoForm({ addTask }: { addTask: (task: any) => void }) {
 
   const onSubmit = (event: React.FormEvent<HTMLButtonElement>) => {
     event.preventDefault();
-    addTask({ name: taskName, description: taskDescription, date: Date() });
+    addTask({ taskName, taskDescription });
     setTaskName("");
     setTaskDescription("");
   };
@@ -30,7 +30,7 @@ function TodoForm({ addTask }: { addTask: (task: any) => void }) {
 
   return (
     <div style={{ marginTop: "20px" }}>
-      <Form>
+      <form>
         <div className="task-input-area">
           <input
             type="text"
@@ -66,7 +66,7 @@ function TodoForm({ addTask }: { addTask: (task: any) => void }) {
         >
           Cancel
         </Button>
-      </Form>
+      </form>
     </div>
   );
 }

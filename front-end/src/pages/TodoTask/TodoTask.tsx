@@ -1,18 +1,26 @@
 import React, { useState, useEffect } from "react";
 import TodoItem from "../../components/TodoItem/TodoItem";
 import TodoForm from "../../components/TodoForm/TodoForm";
-
+import { getTask } from "../../api/TaskAPI";
 function TodoTask() {
   const [taskData, setTaskData] = useState<any>([]);
 
-  const taskElement = taskData
-    .sort(
-      (a: any, b: any) =>
-        new Date(b.date).getTime() - new Date(a.date).getTime()
-    )
-    .map((item: any, index: number) => {
-      return <TodoItem key={index} name={item.name} description={item.des} />;
+  useEffect(() => {
+    getTask().then((data) => {
+      console.log(data);
+      setTaskData(data);
     });
+  }, []);
+
+  const taskElement = taskData.map((task: any) => {
+    return (
+      <TodoItem
+        key={task._id}
+        name={task.taskName}
+        description={task.taskDescription}
+      />
+    );
+  });
 
   const addTask = (task: any) => {
     setTaskData((prevData: any) => {
