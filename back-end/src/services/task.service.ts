@@ -9,7 +9,17 @@ function create(data: any) {
     return task.save();
 }
 
+async function update(id: string, data: any) {
+    return await TaskModel.findByIdAndUpdate(id, data);
+}
+
+async function remove(id: string) {
+    return await TaskModel.findByIdAndDelete(id);
+}
+
 export default {
     get,
-    create
+    create,
+    update,
+    remove
 }

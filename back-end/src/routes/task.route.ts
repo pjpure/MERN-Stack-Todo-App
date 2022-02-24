@@ -7,4 +7,8 @@ router.get('/', TaskController.get);
 
 router.post('/', TaskController.create);
 
+router.put('/:id', TaskController.update);
+
+router.delete('/:id', TaskController.remove);
+
 export default router;

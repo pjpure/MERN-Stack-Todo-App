@@ -1,8 +1,8 @@
 import { Router } from 'express';
-import TasksRouter from './task.route';
+import TaskRouter from './task.route';
 
 const router: Router = Router();
 
-router.use('/tasks', TasksRouter);
+router.use('/tasks', TaskRouter);
 
 export default router;
