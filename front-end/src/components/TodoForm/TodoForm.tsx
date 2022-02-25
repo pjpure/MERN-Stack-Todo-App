@@ -1,23 +1,43 @@
 import React, { useState } from "react";
 import { Button } from "react-bootstrap";
 import "./TodoForm.css";
-function TodoForm({ addTask }: { addTask: (task: any) => void }) {
+import { createTask } from "../../api/TaskAPI";
+
+type ItemProps = {
+  addTask: (task: any) => void;
+};
+function TodoForm({ addTask }: ItemProps) {
   const [taskName, setTaskName] = useState<string>("");
   const [taskDescription, setTaskDescription] = useState<string>("");
 
   const onTaskNameChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setTaskName(event.target.value);
+    let data: string = event.target.value;
+    if (data === " ") {
+      data = "";
+    }
+    setTaskName(data);
   };
 
   const onTaskDescriptionChange = (
     event: React.ChangeEvent<HTMLTextAreaElement>
   ) => {
-    setTaskDescription(event.target.value);
+    let data: string = event.target.value;
+    if (data === " ") {
+      data = "";
+    }
+    setTaskDescription(data);
   };
 
   const onSubmit = (event: React.FormEvent<HTMLButtonElement>) => {
     event.preventDefault();
-    addTask({ taskName, taskDescription });
+    createTask({ taskName, taskDescription })
+      .then((res) => {
+        console.log(res);
+        addTask(res);
+      })
+      .catch((err) => {
+        console.log(err.message);
+      });
     setTaskName("");
     setTaskDescription("");
   };

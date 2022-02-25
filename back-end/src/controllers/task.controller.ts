@@ -8,6 +8,9 @@ async function get(req: Request, res: Response) {
 }
 
 async function create(req: Request, res: Response) {
+    if (req.body.taskName === "") {
+        return res.status(400).send({ message: 'Task name is required' });
+    }
     const result = await TaskService.create(req.body)
     return res.status(201).send(result);
 }

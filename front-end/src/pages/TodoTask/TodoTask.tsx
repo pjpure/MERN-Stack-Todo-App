@@ -7,26 +7,32 @@ function TodoTask() {
 
   useEffect(() => {
     getTask().then((data) => {
-      console.log(data);
       setTaskData(data);
     });
   }, []);
 
-  const taskElement = taskData.map((task: any) => {
-    return (
-      <TodoItem
-        key={task._id}
-        name={task.taskName}
-        description={task.taskDescription}
-      />
-    );
-  });
+  const removeTask = (_id: string) => {
+    const newTaskData = taskData.filter((task: any) => task._id !== _id);
+    setTaskData(newTaskData);
+  };
 
   const addTask = (task: any) => {
     setTaskData((prevData: any) => {
       return [...prevData, task];
     });
   };
+
+  const taskElement = taskData.map((task: any) => {
+    return (
+      <TodoItem
+        key={task._id}
+        _id={task._id}
+        name={task.taskName}
+        description={task.taskDescription}
+        removeTask={removeTask}
+      />
+    );
+  });
 
   return (
     <div>

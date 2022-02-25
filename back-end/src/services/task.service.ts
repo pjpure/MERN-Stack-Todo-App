@@ -10,7 +10,7 @@ function create(data: any) {
 }
 
 async function update(id: string, data: any) {
-    return await TaskModel.findByIdAndUpdate(id, data);
+    return await TaskModel.findByIdAndUpdate(id, data, { new: true });
 }
 
 async function remove(id: string) {
