@@ -3,9 +3,9 @@ import { TaskController } from '../controllers';
 
 const router = Router();
 
-router.get('/', TaskController.get);
+router.get('/:userId', TaskController.get);
 
-router.post('/', TaskController.create);
+router.post('/:userId', TaskController.create);
 
 router.put('/:id', TaskController.update);
 

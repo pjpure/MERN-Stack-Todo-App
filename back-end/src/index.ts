@@ -13,6 +13,8 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 mongoose.connect("" + process.env.DB_URL).then(() => {
     console.log("database connected");
+}).catch((err) => {
+    console.log(err);
 });
 
 app.use('/api', router);
