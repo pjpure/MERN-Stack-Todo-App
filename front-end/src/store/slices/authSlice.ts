@@ -1,14 +1,20 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
-
+import { User } from '../../types';
 import { signIn } from '../../data/users';
 
-const initialState: any = {
-    user: null,
-    loading: false,
-    error: null,
+type AuthState = {
+    user: User | null;
+    loading: boolean;
+    error: string;
 }
 
-export const signInAsync: any = createAsyncThunk('signIn', async ({ username, password }: { username: string, password: string }, store) => {
+const initialState: AuthState = {
+    user: null,
+    loading: false,
+    error: '',
+}
+
+export const signInAsync = createAsyncThunk('signIn', async ({ username, password }: { username: string, password: string }, store) => {
     try {
         const user = await signIn(username, password);
 
@@ -30,22 +36,25 @@ const authSlice = createSlice({
             state.error = '';
         }
     },
-    extraReducers: {
-        [signInAsync.pending]: (state, action) => {
+    extraReducers: (builder) => {
+        builder.addCase(signInAsync.pending, (state, action) => {
             state.loading = true;
             state.error = '';
-        },
-        [signInAsync.fulfilled]: (state, action) => {
+        });
+        builder.addCase(signInAsync.fulfilled, (state, action) => {
             state.user = action.payload;
             state.loading = false;
             state.error = '';
-        },
-        [signInAsync.rejected]: (state, action) => {
+        });
+        builder.addCase(signInAsync.rejected, (state, action) => {
             state.user = null;
-            state.error = action.error.message;
+            state.error = action.error.message || '';
             state.loading = false;
-        },
+        });
+
     }
+
+
 })
 
 export const { signOut } = authSlice.actions;

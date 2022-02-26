@@ -1,11 +1,11 @@
 import TodoItem from "../../components/TodoItem/TodoItem";
 import TodoForm from "../../components/TodoForm/TodoForm";
-import { useSelector } from "react-redux";
+import { useAppSelector } from "../../store/store";
 
 function TodoTask() {
-  const task = useSelector((state: any) => state.task);
+  const task = useAppSelector((state) => state.task);
 
-  const taskElement = task.map((task: any) => {
+  const taskElement = task.map((task) => {
     return <TodoItem key={task._id} task={task} />;
   });
 

@@ -1,13 +1,13 @@
 import React from "react";
 import { Button, Navbar, Nav, Container } from "react-bootstrap";
-import { useSelector, useDispatch } from "react-redux";
+import { useAppSelector, useAppDispatch } from "../../store/store";
 import { signOut } from "../../store/slices/authSlice";
 import "./NavBar.css";
 
 function NavBar() {
-  const { user } = useSelector((state: any) => state.auth);
+  const { user } = useAppSelector((state) => state.auth);
 
-  const dispatch = useDispatch();
+  const dispatch = useAppDispatch();
 
   return (
     <div>

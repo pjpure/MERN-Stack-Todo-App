@@ -1,14 +1,14 @@
 import React, { useState } from "react";
 import { Button } from "react-bootstrap";
 import "./TodoForm.css";
-import { useDispatch } from "react-redux";
+import { useAppDispatch } from "../../store/store";
 import { addTask } from "../../store/slices/taskSlice";
 
 function TodoForm() {
   const [taskName, setTaskName] = useState<string>("");
   const [taskDescription, setTaskDescription] = useState<string>("");
 
-  const dispatch = useDispatch();
+  const dispatch = useAppDispatch();
 
   const onTaskNameChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     let data: string = event.target.value;
@@ -31,7 +31,12 @@ function TodoForm() {
   const onSubmit = (event: React.FormEvent<HTMLButtonElement>) => {
     event.preventDefault();
     dispatch(
-      addTask({ taskName, taskDescription, _id: Math.random().toString() })
+      addTask({
+        taskName,
+        taskDescription,
+        _id: Math.random().toString(),
+        taskStatus: false,
+      })
     );
     setTaskName("");
     setTaskDescription("");

@@ -1,15 +1,15 @@
 import React, { useState } from "react";
-import { useDispatch, useSelector } from "react-redux";
 import { Button } from "react-bootstrap";
 import "./SignInForm.css";
 import { signInAsync } from "../../store/slices/authSlice";
+import { useAppDispatch, useAppSelector } from "../../store/store";
 
 function SignInForm() {
-  const [username, setUsername] = useState("");
-  const [password, setPassword] = useState("");
+  const [username, setUsername] = useState<string>("");
+  const [password, setPassword] = useState<string>("");
 
-  const dispatch = useDispatch();
-  const { loading, error } = useSelector((state: any) => state.auth);
+  const dispatch = useAppDispatch();
+  const { loading, error } = useAppSelector((state) => state.auth);
 
   return (
     <div className="signin-form">

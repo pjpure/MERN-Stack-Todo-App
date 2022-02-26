@@ -1,7 +1,7 @@
 import { TaskModel } from "../models";
 
-async function get(taskStatus: boolean) {
-    return await TaskModel.find({ taskStatus: taskStatus });
+async function get() {
+    return await TaskModel.find();
 }
 
 function create(data: any) {

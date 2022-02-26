@@ -2,8 +2,7 @@ import { Request, Response } from 'express';
 import { TaskService } from '../services';
 
 async function get(req: Request, res: Response) {
-    let status: boolean = (req.query.taskStatus === 'true');
-    const result = await TaskService.get(status);
+    const result = await TaskService.get();
     return res.status(200).send(result);
 }
 

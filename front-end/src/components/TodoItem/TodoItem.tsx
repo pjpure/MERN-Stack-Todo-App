@@ -3,14 +3,15 @@ import { Row, Col, Button } from "react-bootstrap";
 import "./TodoItem.css";
 import { AiFillEdit, AiFillDelete, AiFillCheckCircle } from "react-icons/ai";
 import { deleteTask } from "../../store/slices/taskSlice";
-import { useDispatch } from "react-redux";
+import { useAppDispatch } from "../../store/store";
+import { Task } from "../../types";
 
-type ItemProps = {
-  task: any;
+type Props = {
+  task: Task;
 };
 
-function TodoItem({ task }: ItemProps) {
-  const dispatch = useDispatch();
+function TodoItem({ task }: Props) {
+  const dispatch = useAppDispatch();
 
   return (
     <div className="todo-item">

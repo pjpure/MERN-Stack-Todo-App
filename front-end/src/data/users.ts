@@ -1,19 +1,19 @@
-export const users = [
+import { User } from '../types';
+
+export const users: User[] = [
     {
-        id: 'a',
+        _id: 'a',
         username: '',
-        email: 'somsak@test.com',
         password: '',
     },
     {
-        id: 'b',
+        _id: 'b',
         username: 'wanchai',
-        email: 'wanchai@test.com',
         password: '123abc',
     },
 ]
 
-export function signIn(username: string, password: string) {
+export function signIn(username: string, password: string): Promise<User> {
     return new Promise((resolve, reject) => {
         const foundUser = users.find(
             (user) => user.username === username && user.password === password
