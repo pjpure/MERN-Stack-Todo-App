@@ -5,7 +5,7 @@ import { useAppDispatch, useAppSelector } from "../../store/store";
 import { createTask } from "../../api/TaskAPI";
 import { addTask } from "../../store/slices/taskSlice";
 import { Task } from "../../types";
-function TodoForm() {
+function TodoForm({ addTaskToggle }: any) {
   const [taskName, setTaskName] = useState<string>("");
   const [taskDescription, setTaskDescription] = useState<string>("");
   const { user } = useAppSelector((state) => state.auth);
@@ -38,6 +38,7 @@ function TodoForm() {
           dispatch(addTask(data));
           setTaskName("");
           setTaskDescription("");
+          addTaskToggle();
         })
         .catch((error) => {
           console.log(error.response.data);
@@ -49,6 +50,7 @@ function TodoForm() {
     event.preventDefault();
     setTaskName("");
     setTaskDescription("");
+    addTaskToggle();
   };
 
   return (
