@@ -10,22 +10,6 @@ import { validateUser } from "./api/AuthApi";
 
 import { useAppSelector, useAppDispatch } from "./store/store";
 import { setUser } from "./store/slices/authSlice";
-function UnAuthApp() {
-  return (
-    <Routes>
-      <Route path="/signin" element={<SignIn />} />
-      <Route path="/signup" element={<SignUp />} />
-    </Routes>
-  );
-}
-
-function AuthApp() {
-  return (
-    <Routes>
-      <Route path="/" element={<TodoTask />} />
-    </Routes>
-  );
-}
 
 function App() {
   const { user } = useAppSelector((state) => state.auth);
@@ -61,7 +45,13 @@ function App() {
       <Fragment>
         <NavBar />
         <div className="content">
-          <Container>{!user ? <UnAuthApp /> : <AuthApp />}</Container>
+          <Container>
+            <Routes>
+              <Route path="/signin" element={<SignIn />} />
+              <Route path="/signup" element={<SignUp />} />
+              <Route path="/" element={<TodoTask />} />
+            </Routes>
+          </Container>
         </div>
       </Fragment>
     </div>
