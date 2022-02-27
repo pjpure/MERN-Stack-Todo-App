@@ -53,7 +53,7 @@ function SignUp() {
         <Form.Group className="mb-3" controlId="formBasicPassword2">
           <Form.Label>Confirm Password</Form.Label>
           <Form.Control
-            type="password2"
+            type="password"
             name="password2"
             placeholder="Enter Confirm Password"
             value={password2}
