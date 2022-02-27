@@ -1,13 +1,14 @@
 import React, { useState } from "react";
 import { Button } from "react-bootstrap";
 import "./TodoForm.css";
-import { useAppDispatch } from "../../store/store";
+import { useAppDispatch, useAppSelector } from "../../store/store";
+import { createTask } from "../../api/TaskAPI";
 import { addTask } from "../../store/slices/taskSlice";
-
+import { Task } from "../../types";
 function TodoForm() {
   const [taskName, setTaskName] = useState<string>("");
   const [taskDescription, setTaskDescription] = useState<string>("");
-
+  const { user } = useAppSelector((state) => state.auth);
   const dispatch = useAppDispatch();
 
   const onTaskNameChange = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -30,16 +31,18 @@ function TodoForm() {
 
   const onSubmit = (event: React.FormEvent<HTMLButtonElement>) => {
     event.preventDefault();
-    dispatch(
-      addTask({
-        taskName,
-        taskDescription,
-        _id: Math.random().toString(),
-        taskStatus: false,
-      })
-    );
-    setTaskName("");
-    setTaskDescription("");
+    const token = localStorage.getItem("token");
+    if (token && user) {
+      createTask(user.id, { taskName, taskDescription }, token)
+        .then((data: Task) => {
+          dispatch(addTask(data));
+          setTaskName("");
+          setTaskDescription("");
+        })
+        .catch((error) => {
+          console.log(error.response.data);
+        });
+    }
   };
 
   const onReset = (event: React.FormEvent<HTMLButtonElement>) => {

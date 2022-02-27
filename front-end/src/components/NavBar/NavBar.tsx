@@ -9,23 +9,27 @@ function NavBar() {
 
   const dispatch = useAppDispatch();
 
+  const onSignOut = () => {
+    try {
+      dispatch(signOut());
+      localStorage.removeItem("token");
+    } catch (err) {
+      console.log(err);
+    }
+  };
+
   return (
     <div>
-      <Navbar bg="primary" variant="dark" expand="lg">
+      <Navbar expand="lg" bg="primary" variant="dark">
         <Container>
-          <Navbar.Brand href="#home">Todo</Navbar.Brand>
-          <Navbar.Toggle aria-controls="basic-navbar-nav" />
-          <Navbar.Collapse id="basic-navbar-nav">
-            <Nav className="me-auto">
-              <Nav.Link href="#home">Home</Nav.Link>
-              <Nav.Link href="#link">Link</Nav.Link>
-            </Nav>
+          <Navbar.Brand href="/">Todo</Navbar.Brand>
+          <Nav>
             {user ? (
-              <Button variant="danger" onClick={() => dispatch(signOut())}>
+              <Button variant="danger" onClick={onSignOut}>
                 Sign Out
               </Button>
             ) : null}
-          </Navbar.Collapse>
+          </Nav>
         </Container>
       </Navbar>
     </div>

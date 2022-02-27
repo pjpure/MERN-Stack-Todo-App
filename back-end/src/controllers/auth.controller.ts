@@ -6,9 +6,17 @@ import dotenv from 'dotenv';
 
 dotenv.config();
 
-const validateToken = (req: Request, res: Response, next: NextFunction) => {
-
-    return res.status(200).json({
+async function validateToken(req: Request, res: Response, next: NextFunction) {
+    let user = await UserModel.findById(req.body.decoded.id).exec();
+    if (!user) {
+        return res.status(400).send("User Not Found");
+    }
+    user = {
+        id: user.id,
+        username: user.username
+    }
+    return res.status(200).send({
+        data: user,
         message: 'Token(s) validated'
     });
 };
@@ -49,19 +57,17 @@ async function signIn(req: Request, res: Response) {
         }
 
         const payload = {
-            user: {
-                id: user.id,
-                username: user.username
-            }
+            id: user.id,
+            username: user.username
         }
-        jwt.sign(payload, "" + process.env.JWT_SECRET, { expiresIn: '1d' }, (err, token) => {
+        jwt.sign(payload, "" + process.env.JWT_SECRET, { expiresIn: '365d' }, (err, token) => {
             if (err) {
                 return res.status(500).send({
                     message: err.message,
                     error: err
                 });
             }
-            return res.status(200).send({ token, payload });
+            return res.status(200).send({ ...payload, token });
         });
     } catch (err: any) {
         return res.status(500).send({

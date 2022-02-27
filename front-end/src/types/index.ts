@@ -2,11 +2,14 @@ export type Task = {
     _id: string,
     taskName: string,
     taskDescription: string,
-    taskStatus: boolean
+    taskStatus: boolean,
+    created_at: string,
+
 }
 
 export type User = {
-    _id: string,
+    id: string,
     username: string,
-    password: string,
+    password?: string,
+    token?: string,
 }

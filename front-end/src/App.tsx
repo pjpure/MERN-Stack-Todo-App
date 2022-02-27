@@ -1,17 +1,20 @@
 import "./App.css";
-import React, { Fragment } from "react";
-import { Route, Routes, useNavigate } from "react-router-dom";
+import React, { Fragment, useEffect } from "react";
+import { Route, Routes, useNavigate, useLocation } from "react-router-dom";
 import TodoTask from "./pages/TodoTask/TodoTask";
 import SignIn from "./pages/SignIn/SignIn";
+import SignUp from "./pages/SignUp/SignUp";
 import { Container } from "react-bootstrap";
 import NavBar from "./components/NavBar/NavBar";
+import { validateUser } from "./api/AuthApi";
 
-import { useSelector } from "react-redux";
-
+import { useAppSelector, useAppDispatch } from "./store/store";
+import { setUser } from "./store/slices/authSlice";
 function UnAuthApp() {
   return (
     <Routes>
-      <Route path="/" element={<SignIn />} />
+      <Route path="/signin" element={<SignIn />} />
+      <Route path="/signup" element={<SignUp />} />
     </Routes>
   );
 }
@@ -25,13 +28,39 @@ function AuthApp() {
 }
 
 function App() {
-  const { user } = useSelector((state: any) => state.auth);
+  const { user } = useAppSelector((state) => state.auth);
+  const dispatch = useAppDispatch();
+  const token = localStorage.token;
+  const navigate = useNavigate();
+  const location = useLocation();
+
+  useEffect(() => {
+    if (token) {
+      validateUser(token)
+        .then((res) => {
+          dispatch(setUser(res.data));
+        })
+        .catch((err) => {
+          console.log(err.response.data);
+          localStorage.removeItem("token");
+          navigate("/signin");
+        });
+    }
+  }, [dispatch, navigate, token]);
+
+  useEffect(() => {
+    if (!user && location.pathname === "/") {
+      navigate("/signin");
+    } else if (user) {
+      navigate("/");
+    }
+  }, [user, location.pathname, navigate]);
 
   return (
-    <div>
+    <div className="App">
       <Fragment>
         <NavBar />
-        <div className="App">
+        <div className="content">
           <Container>{!user ? <UnAuthApp /> : <AuthApp />}</Container>
         </div>
       </Fragment>
