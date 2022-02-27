@@ -5,10 +5,13 @@ import { useAppDispatch, useAppSelector } from "../../store/store";
 import { createTask } from "../../api/TaskAPI";
 import { addTask } from "../../store/slices/taskSlice";
 import { Task } from "../../types";
+import { Spinner } from "react-bootstrap";
 function TodoForm({ addTaskToggle }: any) {
   const [taskName, setTaskName] = useState<string>("");
   const [taskDescription, setTaskDescription] = useState<string>("");
   const { user } = useAppSelector((state) => state.auth);
+  const [isLoading, setIsLoading] = useState(false);
+
   const dispatch = useAppDispatch();
 
   const onTaskNameChange = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -29,18 +32,20 @@ function TodoForm({ addTaskToggle }: any) {
     setTaskDescription(data);
   };
 
-  const onSubmit = (event: React.FormEvent<HTMLButtonElement>) => {
+  const onSubmit: any = (event: React.FormEvent<HTMLButtonElement>) => {
     event.preventDefault();
-    const token = localStorage.getItem("token");
-    if (token && user) {
-      createTask(user.id, { taskName, taskDescription }, token)
+    setIsLoading(true);
+    if (user) {
+      createTask(user.id, { taskName, taskDescription }, user.token)
         .then((data: Task) => {
           dispatch(addTask(data));
           setTaskName("");
           setTaskDescription("");
           addTaskToggle();
+          setIsLoading(false);
         })
         .catch((error) => {
+          setIsLoading(false);
           console.log(error.response.data);
         });
     }
@@ -55,7 +60,7 @@ function TodoForm({ addTaskToggle }: any) {
 
   return (
     <div style={{ marginTop: "20px" }}>
-      <form>
+      <form onSubmit={onSubmit}>
         <div className="task-input-area">
           <input
             type="text"
@@ -63,6 +68,7 @@ function TodoForm({ addTaskToggle }: any) {
             placeholder="Task name"
             value={taskName}
             onChange={onTaskNameChange}
+            required
           />
           <textarea
             className="task-description"
@@ -74,15 +80,20 @@ function TodoForm({ addTaskToggle }: any) {
         </div>
         <Button
           variant="primary"
-          onClick={onSubmit}
+          type="submit"
           style={{
             marginTop: "10px",
             marginRight: "10px",
             fontSize: "10pt",
             color: "white",
+            width: "90px",
           }}
         >
-          Add task
+          {isLoading ? (
+            <Spinner size="sm" animation="border" variant="light" />
+          ) : (
+            "Add task"
+          )}
         </Button>
         <Button
           variant="secondary"

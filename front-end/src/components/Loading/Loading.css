@@ -1,0 +1,7 @@
+.loading {
+  z-index: 9999;
+  text-align: center;
+  position: fixed;
+  top: 40%;
+  left: 50%;
+}

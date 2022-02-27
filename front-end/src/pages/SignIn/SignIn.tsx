@@ -5,22 +5,27 @@ import { useAppDispatch } from "../../store/store";
 import { setUser } from "../../store/slices/authSlice";
 import { signIn } from "../../api/AuthApi";
 import { useNavigate } from "react-router-dom";
+import { Spinner } from "react-bootstrap";
 
 function SignIn() {
   const [username, setUsername] = useState<string>("");
   const [password, setPassword] = useState<string>("");
+  const [isLoading, setIsLoading] = useState(false);
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
 
   const onSubmit: any = (event: React.FormEvent<HTMLButtonElement>) => {
     event.preventDefault();
+    setIsLoading(true);
     signIn(username, password)
       .then((data) => {
         dispatch(setUser(data));
         localStorage.setItem("token", data.token);
-        navigate("/");
+        setIsLoading(false);
+        navigate("/task");
       })
       .catch((error) => {
+        setIsLoading(false);
         alert(error.response.data);
       });
   };
@@ -51,7 +56,11 @@ function SignIn() {
         </Form.Group>
 
         <Button style={{ width: "100%" }} type="submit">
-          Sign In
+          {isLoading ? (
+            <Spinner size="sm" animation="border" variant="light" />
+          ) : (
+            "Sign In"
+          )}
         </Button>
         <br />
         <br />

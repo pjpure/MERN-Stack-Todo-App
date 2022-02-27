@@ -3,16 +3,18 @@ import { Button, Navbar, Nav, Container } from "react-bootstrap";
 import { useAppSelector, useAppDispatch } from "../../store/store";
 import { signOut } from "../../store/slices/authSlice";
 import "./NavBar.css";
+import { useNavigate } from "react-router-dom";
 
 function NavBar() {
   const { user } = useAppSelector((state) => state.auth);
-
+  const navigate = useNavigate();
   const dispatch = useAppDispatch();
 
   const onSignOut = () => {
     try {
       dispatch(signOut());
       localStorage.removeItem("token");
+      navigate("/signin");
     } catch (err) {
       console.log(err);
     }

@@ -1,41 +1,51 @@
-import React from "react";
+import React, { useState } from "react";
 import { Row, Col, Button } from "react-bootstrap";
 import "./TodoItem.css";
-import { AiFillEdit, AiFillDelete, AiFillCheckCircle } from "react-icons/ai";
+import { AiFillDelete, AiFillCheckCircle } from "react-icons/ai";
 import { deleteTask, editTask } from "../../store/slices/taskSlice";
 import { useAppDispatch } from "../../store/store";
 import { Task } from "../../types";
 import { removeTask, updateTask } from "../../api/TaskAPI";
+import { useAppSelector } from "../../store/store";
+import { Spinner } from "react-bootstrap";
 
 type Props = {
   task: Task;
 };
 
 function TodoItem({ task }: Props) {
+  const [isDoneLoading, setDoneIsLoading] = useState(false);
+  const [isRemoveLoading, setRemoveIsLoading] = useState(false);
   const dispatch = useAppDispatch();
-  const token = localStorage.getItem("token");
+  const { user } = useAppSelector((state) => state.auth);
 
   const onDelete = () => {
-    if (token) {
-      removeTask(task._id, token)
+    if (user) {
+      setRemoveIsLoading(true);
+      removeTask(task._id, user.token)
         .then((res) => {
           dispatch(deleteTask(res.data._id));
+          setRemoveIsLoading(false);
         })
         .catch((err) => {
           console.log(err.response.data);
+          setRemoveIsLoading(false);
         });
     }
   };
 
   const onDone = () => {
-    if (token) {
+    if (user) {
+      setDoneIsLoading(true);
       let taskStatus = true;
-      updateTask(task._id, { taskStatus }, token)
+      updateTask(task._id, { taskStatus }, user.token)
         .then((res) => {
           dispatch(editTask(res.data));
+          setDoneIsLoading(false);
         })
         .catch((err) => {
           console.log(err.response.data);
+          setDoneIsLoading(false);
         });
     }
   };
@@ -48,14 +58,19 @@ function TodoItem({ task }: Props) {
           <p>{task.taskDescription}</p>
         </Col>
         <Col xs="4" className="todo-btn">
-          {/* <Button variant="primary">
-            <AiFillEdit size={20} />
-          </Button> */}
-          <Button variant="success" onClick={onDone}>
-            <AiFillCheckCircle size={20} />
+          <Button style={{ width: "50px" }} variant="success" onClick={onDone}>
+            {isDoneLoading ? (
+              <Spinner size="sm" animation="border" variant="light" />
+            ) : (
+              <AiFillCheckCircle size={20} />
+            )}
           </Button>
-          <Button variant="danger">
-            <AiFillDelete size={20} onClick={onDelete} />
+          <Button style={{ width: "50px" }} variant="danger" onClick={onDelete}>
+            {isRemoveLoading ? (
+              <Spinner size="sm" animation="border" variant="light" />
+            ) : (
+              <AiFillDelete size={20} />
+            )}
           </Button>
         </Col>
       </Row>
