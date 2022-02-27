@@ -68,7 +68,18 @@ function SignUp() {
         <br />
         <p style={{ textAlign: "center" }}>
           {" "}
-          Already a member? <a href="/signin"> Sign in</a>
+          Already a member?{" "}
+          <span
+            style={{
+              cursor: "pointer",
+              color: "blue",
+              textDecoration: "underline",
+            }}
+            onClick={() => navigate("/signin")}
+          >
+            {" "}
+            Sign in
+          </span>
         </p>
       </Form>
     </div>

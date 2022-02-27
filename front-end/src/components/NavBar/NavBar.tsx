@@ -22,7 +22,7 @@ function NavBar() {
     <div>
       <Navbar expand="lg" bg="primary" variant="dark">
         <Container>
-          <Navbar.Brand href="/">Todo</Navbar.Brand>
+          <Navbar.Brand>Todo</Navbar.Brand>
           <Nav>
             {user ? (
               <Button variant="danger" onClick={onSignOut}>
