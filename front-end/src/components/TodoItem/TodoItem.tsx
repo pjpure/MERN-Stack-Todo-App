@@ -24,8 +24,8 @@ function TodoItem({ task }: Props) {
       setRemoveIsLoading(true);
       removeTask(task._id, user.token)
         .then((res) => {
-          dispatch(deleteTask(res.data._id));
           setRemoveIsLoading(false);
+          dispatch(deleteTask(res.data._id));
         })
         .catch((err) => {
           console.log(err.response.data);
@@ -40,8 +40,8 @@ function TodoItem({ task }: Props) {
       let taskStatus = true;
       updateTask(task._id, { taskStatus }, user.token)
         .then((res) => {
-          dispatch(editTask(res.data));
           setDoneIsLoading(false);
+          dispatch(editTask(res.data));
         })
         .catch((err) => {
           console.log(err.response.data);

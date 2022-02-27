@@ -6,12 +6,13 @@ import { createTask } from "../../api/TaskAPI";
 import { addTask } from "../../store/slices/taskSlice";
 import { Task } from "../../types";
 import { Spinner } from "react-bootstrap";
-function TodoForm({ addTaskToggle }: any) {
+import { AiOutlinePlus } from "react-icons/ai";
+function TodoForm() {
   const [taskName, setTaskName] = useState<string>("");
   const [taskDescription, setTaskDescription] = useState<string>("");
   const { user } = useAppSelector((state) => state.auth);
   const [isLoading, setIsLoading] = useState(false);
-
+  const [toggleTask, setToggleTask] = useState<Boolean>(true);
   const dispatch = useAppDispatch();
 
   const onTaskNameChange = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -34,15 +35,16 @@ function TodoForm({ addTaskToggle }: any) {
 
   const onSubmit: any = (event: React.FormEvent<HTMLButtonElement>) => {
     event.preventDefault();
-    setIsLoading(true);
+
     if (user) {
+      setIsLoading(true);
       createTask(user.id, { taskName, taskDescription }, user.token)
         .then((data: Task) => {
-          dispatch(addTask(data));
+          addTaskToggle();
           setTaskName("");
           setTaskDescription("");
-          addTaskToggle();
           setIsLoading(false);
+          dispatch(addTask(data));
         })
         .catch((error) => {
           setIsLoading(false);
@@ -58,51 +60,65 @@ function TodoForm({ addTaskToggle }: any) {
     addTaskToggle();
   };
 
+  const addTaskToggle = () => {
+    setToggleTask(!toggleTask);
+  };
+
   return (
     <div style={{ marginTop: "20px" }}>
-      <form onSubmit={onSubmit}>
-        <div className="task-input-area">
-          <input
-            type="text"
-            className="task-name"
-            placeholder="Task name"
-            value={taskName}
-            onChange={onTaskNameChange}
-            required
-          />
-          <textarea
-            className="task-description"
-            rows={4}
-            placeholder="Description"
-            value={taskDescription}
-            onChange={onTaskDescriptionChange}
-          />
+      {toggleTask ? (
+        <div>
+          <Button onClick={addTaskToggle}>
+            <AiOutlinePlus /> Add task
+          </Button>
+          <br />
         </div>
-        <Button
-          variant="primary"
-          type="submit"
-          style={{
-            marginTop: "10px",
-            marginRight: "10px",
-            fontSize: "10pt",
-            color: "white",
-            width: "90px",
-          }}
-        >
-          {isLoading ? (
-            <Spinner size="sm" animation="border" variant="light" />
-          ) : (
-            "Add task"
-          )}
-        </Button>
-        <Button
-          variant="secondary"
-          onClick={onReset}
-          style={{ marginTop: "10px", fontSize: "10pt" }}
-        >
-          Cancel
-        </Button>
-      </form>
+      ) : (
+        <form onSubmit={onSubmit}>
+          <div className="task-input-area">
+            <input
+              type="text"
+              className="task-name"
+              placeholder="Task name"
+              value={taskName}
+              onChange={onTaskNameChange}
+              required
+            />
+            <textarea
+              className="task-description"
+              rows={4}
+              placeholder="Description"
+              value={taskDescription}
+              onChange={onTaskDescriptionChange}
+            />
+          </div>
+          <Button
+            variant="primary"
+            type="submit"
+            style={{
+              marginTop: "10px",
+              marginRight: "10px",
+              fontSize: "10pt",
+              color: "white",
+              width: "90px",
+            }}
+          >
+            {isLoading ? (
+              <Spinner size="sm" animation="border" variant="light" />
+            ) : (
+              "Add task"
+            )}
+          </Button>
+          <Button
+            variant="secondary"
+            onClick={onReset}
+            style={{ marginTop: "10px", fontSize: "10pt" }}
+          >
+            Cancel
+          </Button>
+        </form>
+      )}
+      <hr />
     </div>
   );
 }

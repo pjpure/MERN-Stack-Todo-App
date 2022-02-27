@@ -20,6 +20,7 @@ function App() {
   const location = useLocation();
 
   useEffect(() => {
+    console.log("555");
     if (token) {
       validateUser(token)
         .then((res) => {

@@ -5,14 +5,11 @@ import { useEffect, useState } from "react";
 import { getTask } from "../../api/TaskAPI";
 import { addAllTask } from "../../store/slices/taskSlice";
 import { Task } from "../../types";
-import { Button } from "react-bootstrap";
-import { AiOutlinePlus } from "react-icons/ai";
 import Loading from "../../components/Loading/Loading";
 function TodoTask() {
   const task = useAppSelector((state) => state.task);
   const user = useAppSelector((state) => state.auth.user);
   const [isLoading, setIsLoading] = useState(true);
-  const [addTask, setAddTask] = useState<Boolean>(false);
 
   const dispatch = useAppDispatch();
   useEffect(() => {
@@ -29,9 +26,6 @@ function TodoTask() {
     }
   }, [user, dispatch]);
 
-  const addTaskToggle = () => {
-    setAddTask(!addTask);
-  };
   const taskElement = task
     .filter((task) => {
       return task.taskStatus === false;
@@ -45,18 +39,8 @@ function TodoTask() {
 
   return (
     <div>
-      {addTask ? (
-        <TodoForm addTaskToggle={addTaskToggle} />
-      ) : (
-        <div>
-          <br />
-          <Button onClick={addTaskToggle}>
-            <AiOutlinePlus /> Add task
-          </Button>
-          <br />
-          <hr />
-        </div>
-      )}
+      <TodoForm />
+
       {!isLoading ? taskElement : <Loading />}
     </div>
   );
