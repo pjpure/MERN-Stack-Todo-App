@@ -6,6 +6,7 @@ import { getTask } from "../../api/TaskAPI";
 import { addAllTask } from "../../store/slices/taskSlice";
 import { Task } from "../../types";
 import Loading from "../../components/Loading/Loading";
+
 function TodoTask() {
   const task = useAppSelector((state) => state.task);
   const user = useAppSelector((state) => state.auth.user);

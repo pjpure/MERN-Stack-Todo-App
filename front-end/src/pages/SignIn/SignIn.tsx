@@ -26,7 +26,7 @@ function SignIn() {
       })
       .catch((error) => {
         setIsLoading(false);
-        alert(error.response.data);
+        alert(error.message);
       });
   };
 
