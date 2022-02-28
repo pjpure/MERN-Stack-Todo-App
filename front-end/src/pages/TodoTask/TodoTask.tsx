@@ -21,7 +21,11 @@ function TodoTask() {
           setIsLoading(false);
         })
         .catch((err) => {
-          console.log(err.response.data);
+          if (err.response) {
+            alert(err.response.data);
+          } else {
+            alert(err.message);
+          }
           setIsLoading(false);
         });
     }

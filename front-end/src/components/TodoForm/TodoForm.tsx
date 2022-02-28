@@ -48,7 +48,11 @@ function TodoForm() {
         })
         .catch((error) => {
           setIsLoading(false);
-          console.log(error.response.data);
+          if (error.response) {
+            alert(error.response.data);
+          } else {
+            alert(error.message);
+          }
         });
     }
   };
