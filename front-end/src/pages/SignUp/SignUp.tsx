@@ -28,7 +28,11 @@ function SignUp() {
         })
         .catch((error) => {
           setIsLoading(false);
-          alert(error.message);
+          if (error.response) {
+            alert(error.response.data);
+          } else {
+            alert(error.message);
+          }
         });
     }
   };

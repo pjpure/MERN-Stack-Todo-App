@@ -33,7 +33,11 @@ function App() {
           navigate("/task");
         })
         .catch((err) => {
-          alert(err.message);
+          if (err.response) {
+            alert(err.response.data);
+          } else {
+            alert(err.message);
+          }
           localStorage.removeItem("token");
           setIsLoading(false);
           navigate("/signin");
