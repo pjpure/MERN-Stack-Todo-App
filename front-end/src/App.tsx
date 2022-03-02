@@ -2,6 +2,7 @@ import "./App.css";
 import { Fragment, useEffect, useState } from "react";
 import { Route, Routes, useNavigate, useLocation } from "react-router-dom";
 import TodoTask from "./pages/TodoTask/TodoTask";
+import TodoDone from "./pages/TodoDone/TodoDone";
 import SignIn from "./pages/SignIn/SignIn";
 import SignUp from "./pages/SignUp/SignUp";
 import { Container } from "react-bootstrap";
@@ -30,7 +31,9 @@ function App() {
           };
           dispatch(setUser(currentUser));
           setIsLoading(false);
-          navigate("/task");
+          if (location.pathname !== "/done") {
+            navigate("/task");
+          }
         })
         .catch((err) => {
           if (err.response) {
@@ -61,6 +64,7 @@ function App() {
                 <Route path="/signin" element={<SignIn />} />
                 <Route path="/signup" element={<SignUp />} />
                 <Route path="/task" element={<TodoTask />} />
+                <Route path="/done" element={<TodoDone />} />
               </Routes>
             </Container>
           </div>
