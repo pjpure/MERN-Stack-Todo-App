@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { Row, Col, Button } from "react-bootstrap";
 import "./TodoItem.css";
-import { AiFillDelete, AiFillCheckCircle } from "react-icons/ai";
+import { AiFillDelete, AiFillCheckCircle, AiFillEdit } from "react-icons/ai";
 import { VscDebugRestart } from "react-icons/vsc";
 import { deleteTask, editTask } from "../../store/slices/taskSlice";
 import { useAppDispatch } from "../../store/store";
@@ -9,6 +9,7 @@ import { Task } from "../../types";
 import { removeTask, updateTask } from "../../api/TaskAPI";
 import { useAppSelector } from "../../store/store";
 import { Spinner } from "react-bootstrap";
+import TodoEditForm from "../TodoEditForm/TodoEditForm";
 
 type Props = {
   task: Task;
@@ -18,6 +19,7 @@ function TodoItem({ task }: Props) {
   const [isDoneLoading, setIsDoneLoading] = useState(false);
   const [isRemoveLoading, setRemoveIsLoading] = useState(false);
   const [isBackLoading, setIsBackLoading] = useState(false);
+  const [isEdit, setIsEdit] = useState(false);
   const dispatch = useAppDispatch();
   const { user } = useAppSelector((state) => state.auth);
 
@@ -68,6 +70,10 @@ function TodoItem({ task }: Props) {
     }
   };
 
+  const editFormToggle = () => {
+    setIsEdit(!isEdit);
+  };
+
   return (
     <div className="todo-item">
       <Row>
@@ -104,6 +110,13 @@ function TodoItem({ task }: Props) {
           <Col xs="4" className="todo-btn">
             <Button
               style={{ width: "50px" }}
+              variant="primary"
+              onClick={editFormToggle}
+            >
+              <AiFillEdit size={20} />
+            </Button>
+            <Button
+              style={{ width: "50px" }}
               variant="success"
               onClick={onDone}
             >
@@ -126,6 +139,9 @@ function TodoItem({ task }: Props) {
             </Button>
           </Col>
         )}
+      </Row>
+      <Row>
+        {isEdit && <TodoEditForm task={task} editFormToggle={editFormToggle} />}
       </Row>
     </div>
   );
