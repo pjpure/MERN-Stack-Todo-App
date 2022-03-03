@@ -23,6 +23,7 @@ function SignIn() {
 
   useEffect(() => {
     if (data) {
+      //console.log(data);
       dispatch(setUser(data));
       localStorage.setItem("token", data.token);
       navigate("/task");

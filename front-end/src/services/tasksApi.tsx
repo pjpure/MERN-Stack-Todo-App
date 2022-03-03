@@ -8,13 +8,12 @@ export const tasksApi = createApi({
     baseUrl: process.env.REACT_APP_API_URL,
     prepareHeaders: (headers) => {
       headers.set("Authorization", `token ${localStorage.getItem("token")}`);
-
       return headers;
     },
   }),
   tagTypes: ["Task"],
   endpoints: (builder) => ({
-    tasks: builder.query<Task[], string>({
+    tasks: builder.query<Task[], string | undefined>({
       query: (userId) => `/tasks/${userId}`,
       providesTags: ["Task"],
     }),
@@ -24,6 +23,7 @@ export const tasksApi = createApi({
         method: "POST",
         body: task,
       }),
+      transformResponse: (response: { data: Task }) => response.data,
       invalidatesTags: ["Task"],
     }),
     deleteTask: builder.mutation<void, string>({
@@ -33,12 +33,13 @@ export const tasksApi = createApi({
       }),
       invalidatesTags: ["Task"],
     }),
-    updateTask: builder.mutation<void, { id: string; task: any }>({
+    updateTask: builder.mutation<Task, { id: string; task: any }>({
       query: ({ id, task }) => ({
         url: `/tasks/${id}`,
         method: "PUT",
         body: task,
       }),
+      transformResponse: (response: { data: Task }) => response.data,
       invalidatesTags: ["Task"],
     }),
   }),

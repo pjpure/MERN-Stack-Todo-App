@@ -1,6 +1,5 @@
 import React, { useState } from "react";
 //query and store
-import { useAppSelector } from "../../store/store";
 import {
   useUpdateTaskMutation,
   useDeleteTaskMutation,
@@ -20,9 +19,10 @@ type Props = {
 };
 
 function TodoItem({ task }: Props) {
-  const { user } = useAppSelector((state) => state.auth);
-  const [updateTask, { isLoading: isUpdating }] = useUpdateTaskMutation();
-  const [deleteTask, { isLoading: isDeleting }] = useDeleteTaskMutation();
+  const [updateTask, { isLoading: isUpdating, isSuccess: isUpdateSuccess }] =
+    useUpdateTaskMutation();
+  const [deleteTask, { isLoading: isDeleting, isSuccess: isDeleteSuccess }] =
+    useDeleteTaskMutation();
   const [isEdit, setIsEdit] = useState(false);
 
   const onDelete = async () => {
@@ -55,7 +55,7 @@ function TodoItem({ task }: Props) {
               variant="secondary"
               onClick={onRedo}
             >
-              {isUpdating ? (
+              {isUpdateSuccess || isUpdating ? (
                 <Spinner size="sm" animation="border" variant="light" />
               ) : (
                 <VscDebugRestart size={20} />
@@ -66,7 +66,7 @@ function TodoItem({ task }: Props) {
               variant="danger"
               onClick={onDelete}
             >
-              {isDeleting ? (
+              {isDeleting || isDeleteSuccess ? (
                 <Spinner size="sm" animation="border" variant="light" />
               ) : (
                 <AiFillDelete size={20} />
@@ -87,7 +87,7 @@ function TodoItem({ task }: Props) {
               variant="success"
               onClick={onDone}
             >
-              {isUpdating ? (
+              {isUpdateSuccess || isUpdating ? (
                 <Spinner size="sm" animation="border" variant="light" />
               ) : (
                 <AiFillCheckCircle size={20} />
@@ -98,7 +98,7 @@ function TodoItem({ task }: Props) {
               variant="danger"
               onClick={onDelete}
             >
-              {isDeleting ? (
+              {isDeleting || isDeleteSuccess ? (
                 <Spinner size="sm" animation="border" variant="light" />
               ) : (
                 <AiFillDelete size={20} />

@@ -2,15 +2,11 @@ import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { User } from '../../types';
 
 type AuthState = {
-    user: User;
+    user: User | null;
 }
 
 const initialState: AuthState = {
-    user: {
-        'id': '',
-        'username': '',
-        'token': '',
-    }
+    user: null,
 }
 
 
@@ -22,11 +18,7 @@ const authSlice = createSlice({
             state.user = action.payload;
         },
         signOut: (state) => {
-            state.user = {
-                'id': '',
-                'username': '',
-                'token': '',
-            }
+            state.user = null
         }
     },
 

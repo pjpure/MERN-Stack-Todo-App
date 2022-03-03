@@ -13,7 +13,7 @@ import { Task } from "../../types";
 function TodoTask() {
   const user = useAppSelector((state) => state.auth.user);
 
-  const { data: tasks, isLoading, error } = useTasksQuery(user.id);
+  const { data: tasks, isLoading, error } = useTasksQuery(user?.id);
   const taskElement = tasks
     ?.filter((task: Task) => {
       return task.taskStatus === false;

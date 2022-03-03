@@ -13,7 +13,6 @@ export const authApi = createApi({
         method: "POST",
         body: { username, password },
       }),
-      transformResponse: (response: { data: User }) => response.data,
     }),
     signUp: builder.mutation<User, { username: string; password: string }>({
       query: ({ username, password }) => ({
@@ -21,7 +20,6 @@ export const authApi = createApi({
         method: "POST",
         body: { username, password },
       }),
-      transformResponse: (response: { data: User }) => response.data,
     }),
     validateUser: builder.query<User, string>({
       query: (token) => ({
