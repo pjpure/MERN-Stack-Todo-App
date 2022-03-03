@@ -1,11 +1,13 @@
 import React, { useState } from "react";
+//services and store
+import { useAppSelector } from "../../store/store";
+import { useUpdateTaskMutation } from "../../services/tasksApi";
+//types
+import { Task } from "../../types";
+//styles
+import { Spinner } from "react-bootstrap";
 import { Button } from "react-bootstrap";
 import "./TodoEditForm.css";
-import { useAppDispatch, useAppSelector } from "../../store/store";
-import { updateTask } from "../../api/TaskAPI";
-import { editTask } from "../../store/slices/taskSlice";
-import { Task } from "../../types";
-import { Spinner } from "react-bootstrap";
 
 function TodoEditForm({
   task,
@@ -18,9 +20,10 @@ function TodoEditForm({
   const [taskDescription, setTaskDescription] = useState<string>(
     task.taskDescription
   );
-  const [isLoading, setIsLoading] = useState(false);
+
+  const [updateTask, { isLoading }] = useUpdateTaskMutation();
+
   const { user } = useAppSelector((state) => state.auth);
-  const dispatch = useAppDispatch();
 
   const onTaskNameChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     let data: string = event.target.value;
@@ -40,21 +43,10 @@ function TodoEditForm({
     setTaskDescription(data);
   };
 
-  const onSubmit: any = (event: React.FormEvent<HTMLButtonElement>) => {
+  const onSubmit: any = async (event: React.FormEvent<HTMLButtonElement>) => {
     event.preventDefault();
-    if (user) {
-      setIsLoading(true);
-      updateTask(task._id, { taskName, taskDescription }, user.token)
-        .then((res) => {
-          setIsLoading(false);
-          dispatch(editTask(res.data));
-          editFormToggle();
-        })
-        .catch((err) => {
-          console.log(err.response.data);
-          setIsLoading(false);
-        });
-    }
+    await updateTask({ id: task._id, task: { taskName, taskDescription } });
+    editFormToggle();
   };
 
   const onCancel = (event: React.FormEvent<HTMLButtonElement>) => {

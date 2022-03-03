@@ -1,38 +1,43 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Button, Form } from "react-bootstrap";
 import "./SignIn.css";
 import { useAppDispatch } from "../../store/store";
 import { setUser } from "../../store/slices/authSlice";
-import { signIn } from "../../api/AuthApi";
+
 import { useNavigate } from "react-router-dom";
 import { Spinner } from "react-bootstrap";
+import { useSignInMutation } from "../../services/authApi";
 
 function SignIn() {
   const [username, setUsername] = useState<string>("");
   const [password, setPassword] = useState<string>("");
-  const [isLoading, setIsLoading] = useState(false);
+
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
+  const [signIn, { data, isLoading, error }] = useSignInMutation();
 
-  const onSubmit: any = (event: React.FormEvent<HTMLButtonElement>) => {
+  const onSubmit: any = async (event: React.FormEvent<HTMLButtonElement>) => {
     event.preventDefault();
-    setIsLoading(true);
-    signIn(username, password)
-      .then((data) => {
-        dispatch(setUser(data));
-        localStorage.setItem("token", data.token);
-        setIsLoading(false);
-        navigate("/task");
-      })
-      .catch((error) => {
-        setIsLoading(false);
-        if (error.response) {
-          alert(error.response.data);
-        } else {
-          alert(error.message);
-        }
-      });
+    await signIn({ username, password });
   };
+
+  useEffect(() => {
+    if (data) {
+      dispatch(setUser(data));
+      localStorage.setItem("token", data.token);
+      navigate("/task");
+    }
+  }, [data]);
+
+  useEffect(() => {
+    if (error) {
+      if ("data" in error) {
+        alert(error.data);
+      } else {
+        alert("Something went wrong");
+      }
+    }
+  }, [error]);
 
   return (
     <div className="signin-form">

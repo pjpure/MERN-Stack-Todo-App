@@ -1,51 +1,33 @@
+//components
 import TodoItem from "../../components/TodoItem/TodoItem";
 import TodoForm from "../../components/TodoForm/TodoForm";
-import { useAppSelector, useAppDispatch } from "../../store/store";
-import { useEffect, useState } from "react";
-import { getTask } from "../../api/TaskAPI";
-import { addAllTask } from "../../store/slices/taskSlice";
-import { Task } from "../../types";
 import Loading from "../../components/Loading/Loading";
 
+//query and store
+import { useTasksQuery } from "../../services/tasksApi";
+import { useAppSelector } from "../../store/store";
+
+//types
+import { Task } from "../../types";
+
 function TodoTask() {
-  const task = useAppSelector((state) => state.task);
   const user = useAppSelector((state) => state.auth.user);
-  const [isLoading, setIsLoading] = useState(true);
 
-  const dispatch = useAppDispatch();
-  useEffect(() => {
-    if (user) {
-      getTask(user.id, user.token)
-        .then((data: Task[]) => {
-          dispatch(addAllTask(data));
-          setIsLoading(false);
-        })
-        .catch((err) => {
-          if (err.response) {
-            alert(err.response.data);
-          } else {
-            alert(err.message);
-          }
-          setIsLoading(false);
-        });
-    }
-  }, [user, dispatch]);
-
-  const taskElement = task
-    .filter((task) => {
+  const { data: tasks, isLoading, error } = useTasksQuery(user.id);
+  const taskElement = tasks
+    ?.filter((task: Task) => {
       return task.taskStatus === false;
     })
-    .sort((a, b) => {
+    .sort((a: Task, b: Task) => {
       return Date.parse(b.created_at) - Date.parse(a.created_at);
     })
-    .map((task) => {
+    .map((task: Task) => {
       return <TodoItem key={task._id} task={task} />;
     });
 
   return (
     <div>
       <TodoForm />
-
       {!isLoading ? taskElement : <Loading />}
     </div>
   );

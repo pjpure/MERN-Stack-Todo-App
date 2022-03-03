@@ -1,7 +1,6 @@
 import React, { useState } from "react";
 import { Button, Form } from "react-bootstrap";
 import "./SignUp.css";
-import { signUp } from "../../api/AuthApi";
 import { useNavigate } from "react-router-dom";
 import { Spinner } from "react-bootstrap";
 
@@ -13,28 +12,27 @@ function SignUp() {
   const navigate = useNavigate();
   const onSubmit: any = (event: React.FormEvent<HTMLButtonElement>) => {
     event.preventDefault();
-
-    if (password !== password2) {
-      alert("Passwords do not match");
-    } else if (username.length < 1 || password.length < 1) {
-      alert("Username and password must be at least 1 characters long");
-    } else {
-      setIsLoading(true);
-      signUp(username, password)
-        .then((data) => {
-          setIsLoading(false);
-          alert("Sign up successful");
-          navigate("/signin");
-        })
-        .catch((error) => {
-          setIsLoading(false);
-          if (error.response) {
-            alert(error.response.data);
-          } else {
-            alert(error.message);
-          }
-        });
-    }
+    // if (password !== password2) {
+    //   alert("Passwords do not match");
+    // } else if (username.length < 1 || password.length < 1) {
+    //   alert("Username and password must be at least 1 characters long");
+    // } else {
+    //   setIsLoading(true);
+    //   signUp(username, password)
+    //     .then((data) => {
+    //       setIsLoading(false);
+    //       alert("Sign up successful");
+    //       navigate("/signin");
+    //     })
+    //     .catch((error) => {
+    //       setIsLoading(false);
+    //       if (error.response) {
+    //         alert(error.response.data);
+    //       } else {
+    //         alert(error.message);
+    //       }
+    //     });
+    // }
   };
   return (
     <div className="signup-form">

@@ -1,73 +1,40 @@
 import React, { useState } from "react";
-import { Row, Col, Button } from "react-bootstrap";
-import "./TodoItem.css";
+//query and store
+import { useAppSelector } from "../../store/store";
+import {
+  useUpdateTaskMutation,
+  useDeleteTaskMutation,
+} from "../../services/tasksApi";
+//components
+import TodoEditForm from "../TodoEditForm/TodoEditForm";
+//types
+import { Task } from "../../types";
+//styles
+import { Row, Col, Button, Spinner } from "react-bootstrap";
 import { AiFillDelete, AiFillCheckCircle, AiFillEdit } from "react-icons/ai";
 import { VscDebugRestart } from "react-icons/vsc";
-import { deleteTask, editTask } from "../../store/slices/taskSlice";
-import { useAppDispatch } from "../../store/store";
-import { Task } from "../../types";
-import { removeTask, updateTask } from "../../api/TaskAPI";
-import { useAppSelector } from "../../store/store";
-import { Spinner } from "react-bootstrap";
-import TodoEditForm from "../TodoEditForm/TodoEditForm";
+import "./TodoItem.css";
 
 type Props = {
   task: Task;
 };
 
 function TodoItem({ task }: Props) {
-  const [isDoneLoading, setIsDoneLoading] = useState(false);
-  const [isRemoveLoading, setRemoveIsLoading] = useState(false);
-  const [isBackLoading, setIsBackLoading] = useState(false);
-  const [isEdit, setIsEdit] = useState(false);
-  const dispatch = useAppDispatch();
   const { user } = useAppSelector((state) => state.auth);
+  const [updateTask, { isLoading: isUpdating }] = useUpdateTaskMutation();
+  const [deleteTask, { isLoading: isDeleting }] = useDeleteTaskMutation();
+  const [isEdit, setIsEdit] = useState(false);
 
-  const onDelete = () => {
-    if (user) {
-      setRemoveIsLoading(true);
-      removeTask(task._id, user.token)
-        .then((res) => {
-          setRemoveIsLoading(false);
-          dispatch(deleteTask(res.data._id));
-        })
-        .catch((err) => {
-          console.log(err.response.data);
-          setRemoveIsLoading(false);
-        });
-    }
+  const onDelete = async () => {
+    await deleteTask(task._id);
   };
 
-  const onDone = () => {
-    if (user) {
-      setIsDoneLoading(true);
-      let taskStatus = true;
-      updateTask(task._id, { taskStatus }, user.token)
-        .then((res) => {
-          setIsDoneLoading(false);
-          dispatch(editTask(res.data));
-        })
-        .catch((err) => {
-          console.log(err.response.data);
-          setIsDoneLoading(false);
-        });
-    }
+  const onDone = async () => {
+    await updateTask({ id: task._id, task: { taskStatus: true } });
   };
 
-  const onRedo = () => {
-    if (user) {
-      setIsBackLoading(true);
-      let taskStatus = false;
-      updateTask(task._id, { taskStatus }, user.token)
-        .then((res) => {
-          setIsBackLoading(false);
-          dispatch(editTask(res.data));
-        })
-        .catch((err) => {
-          console.log(err.response.data);
-          setIsBackLoading(false);
-        });
-    }
+  const onRedo = async () => {
+    await updateTask({ id: task._id, task: { taskStatus: false } });
   };
 
   const editFormToggle = () => {
@@ -88,7 +55,7 @@ function TodoItem({ task }: Props) {
               variant="secondary"
               onClick={onRedo}
             >
-              {isBackLoading ? (
+              {isUpdating ? (
                 <Spinner size="sm" animation="border" variant="light" />
               ) : (
                 <VscDebugRestart size={20} />
@@ -99,7 +66,7 @@ function TodoItem({ task }: Props) {
               variant="danger"
               onClick={onDelete}
             >
-              {isRemoveLoading ? (
+              {isDeleting ? (
                 <Spinner size="sm" animation="border" variant="light" />
               ) : (
                 <AiFillDelete size={20} />
@@ -120,7 +87,7 @@ function TodoItem({ task }: Props) {
               variant="success"
               onClick={onDone}
             >
-              {isDoneLoading ? (
+              {isUpdating ? (
                 <Spinner size="sm" animation="border" variant="light" />
               ) : (
                 <AiFillCheckCircle size={20} />
@@ -131,7 +98,7 @@ function TodoItem({ task }: Props) {
               variant="danger"
               onClick={onDelete}
             >
-              {isRemoveLoading ? (
+              {isDeleting ? (
                 <Spinner size="sm" animation="border" variant="light" />
               ) : (
                 <AiFillDelete size={20} />

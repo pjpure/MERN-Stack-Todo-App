@@ -1,13 +1,18 @@
 import { configureStore } from '@reduxjs/toolkit'
-import taskReducer from './slices/taskSlice'
+// import taskReducer from './slices/taskSlice'
 import authReducer from './slices/authSlice'
 import { useSelector, useDispatch, TypedUseSelectorHook } from 'react-redux'
-
+import { tasksApi } from '../services/tasksApi'
+import { authApi } from '../services/authApi'
 const store = configureStore({
     reducer: {
-        task: taskReducer,
+        // task: taskReducer,
         auth: authReducer,
+        [tasksApi.reducerPath]: tasksApi.reducer,
+        [authApi.reducerPath]: authApi.reducer,
     },
+    middleware: (getDefaultMiddleware) =>
+        getDefaultMiddleware().concat(tasksApi.middleware),
 });
 
 type RootState = ReturnType<typeof store.getState>;

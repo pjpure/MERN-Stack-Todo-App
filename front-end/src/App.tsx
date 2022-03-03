@@ -7,51 +7,73 @@ import SignIn from "./pages/SignIn/SignIn";
 import SignUp from "./pages/SignUp/SignUp";
 import { Container } from "react-bootstrap";
 import NavBar from "./components/NavBar/NavBar";
-import { validateUser } from "./api/AuthApi";
-import { useAppDispatch } from "./store/store";
+//import { validateUser } from "./api/AuthApi";
+import { useAppDispatch, useAppSelector } from "./store/store";
 import { setUser } from "./store/slices/authSlice";
 import { User } from "./types";
 import Loading from "./components/Loading/Loading";
+import { useValidateUserQuery } from "./services/authApi";
 
 function App() {
   const dispatch = useAppDispatch();
-  const token = localStorage.token;
+  const token: string = localStorage.token;
   const navigate = useNavigate();
-  const [isLoading, setIsLoading] = useState(true);
+
   const location = useLocation();
+  const { data: validateUser, isLoading, error } = useValidateUserQuery(token);
 
   useEffect(() => {
-    if (token) {
-      validateUser(token)
-        .then((res) => {
-          const currentUser: User = {
-            id: res.data.id,
-            username: res.data.username,
-            token: token,
-          };
-          dispatch(setUser(currentUser));
-          setIsLoading(false);
-          if (location.pathname !== "/done") {
-            navigate("/task");
-          }
-        })
-        .catch((err) => {
-          if (err.response) {
-            alert(err.response.data);
-          } else {
-            alert(err.message);
-          }
-          localStorage.removeItem("token");
-          setIsLoading(false);
-          navigate("/signin");
-        });
-    } else if (!token && location.pathname !== "/signup") {
-      setIsLoading(false);
-      navigate("/signin");
-    } else {
-      setIsLoading(false);
+    if (validateUser) {
+      dispatch(setUser({ ...validateUser, token }));
+      navigate("/task");
     }
-  }, [dispatch, navigate, token]);
+  }, [validateUser]);
+  //const { data: validateUser, isLoading, error } = useValidateUserQuery(token);
+
+  // useEffect(() => {
+  //   if (token) {
+  //     validateUser(token).then((res) => {
+  //       if (res) {
+  //         console.log(res);
+  //         //dispatch(setUser(res.data));
+  //       } else {
+  //         console.log("no data");
+  //       }
+  //     });
+  //   }
+  // }, []);
+  // useEffect(() => {
+  //   if (token) {
+  //     validateUser(token)
+  //       .then((res) => {
+  //         const currentUser: User = {
+  //           id: res.data.id,
+  //           username: res.data.username,
+  //           token: token,
+  //         };
+  //         dispatch(setUser(currentUser));
+  //         setIsLoading(false);
+  //         if (location.pathname !== "/done") {
+  //           navigate("/task");
+  //         }
+  //       })
+  //       .catch((err) => {
+  //         if (err.response) {
+  //           alert(err.response.data);
+  //         } else {
+  //           alert(err.message);
+  //         }
+  //         localStorage.removeItem("token");
+  //         setIsLoading(false);
+  //         navigate("/signin");
+  //       });
+  //   } else if (!token && location.pathname !== "/signup") {
+  //     setIsLoading(false);
+  //     navigate("/signin");
+  //   } else {
+  //     setIsLoading(false);
+  //   }
+  // }, [dispatch, navigate, token]);
 
   return (
     <div className="App">
